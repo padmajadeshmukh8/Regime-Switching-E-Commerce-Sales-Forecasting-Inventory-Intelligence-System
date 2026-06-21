@@ -89,7 +89,7 @@ df, forecast_df = load_assets()
 # SIDEBAR NAVIGATION
 # ============================================================
 st.sidebar.image("https://img.icons8.com/color/96/000000/combo-chart.png", width=80)
-st.sidebar.title("📊 Sales Intelligence")
+st.sidebar.title(" Sales Intelligence")
 st.sidebar.markdown("---")
 
 page = st.sidebar.radio("Navigation", [
@@ -123,8 +123,8 @@ st.sidebar.info("HMM (3 states) + XGBoost\nWalk-Forward Validated\nSHAP Explaine
 # ============================================================
 # PAGE 1: EXECUTIVE DASHBOARD
 # ============================================================
-if page == "🏠 Executive Dashboard":
-    st.title("🏠 Executive Dashboard")
+if page == " Executive Dashboard":
+    st.title(" Executive Dashboard")
     st.markdown("*Regime-Aware E-Commerce Sales Intelligence Platform*")
     st.markdown("---")
 
@@ -197,7 +197,7 @@ if page == "🏠 Executive Dashboard":
         st.plotly_chart(fig2, use_container_width=True)
 
     # Monthly Heatmap
-    st.subheader("📅 Monthly Sales Heatmap")
+    st.subheader(" Monthly Sales Heatmap")
     df_monthly = df_filtered.copy()
     df_monthly['year']  = df_monthly['date'].dt.year
     df_monthly['month'] = df_monthly['date'].dt.month
@@ -277,8 +277,8 @@ elif page == "🌀 Demand Regime Analytics":
 # ============================================================
 # PAGE 3: SALES FORECASTING
 # ============================================================
-elif page == "📈 Sales Forecasting":
-    st.title("📈 Sales Forecasting")
+elif page == " Sales Forecasting":
+    st.title("Sales Forecasting")
     st.markdown("---")
 
     # Historical vs Forecast
@@ -324,7 +324,7 @@ elif page == "📈 Sales Forecasting":
                       forecast_df['regime_label'].value_counts().idxmax() if 'regime_label' in forecast_df.columns else "N/A")
 
         # Forecast by regime
-        st.subheader("📅 Forecast by Predicted Regime")
+        st.subheader("Forecast by Predicted Regime")
         if 'regime' in forecast_df.columns:
             fig2 = go.Figure()
             for rid in [0, 1, 2]:
@@ -340,7 +340,7 @@ elif page == "📈 Sales Forecasting":
             st.plotly_chart(fig2, use_container_width=True)
 
     # Walk-Forward Metrics Table
-    st.subheader("📊 Walk-Forward Validation Results")
+    st.subheader("Walk-Forward Validation Results")
     wf_demo = pd.DataFrame({
         'Fold': ['2013–2016', '2013–2017'],
         'Train Size': [1096, 1461],
