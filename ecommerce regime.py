@@ -48,7 +48,7 @@ train, stores, oil, holidays, transactions = load_data(DATA_PATH)
 print("\nTrain Sample:")
 print(train.head(3))
 
-#STEP 3: CONVERT DATE COLUMNS
+# CONVERT DATE COLUMNS
 
 for df, col in [(train, 'date'), (oil, 'date'), (holidays, 'date'), (transactions, 'date')]:
     df[col] = pd.to_datetime(df[col])
@@ -123,22 +123,22 @@ print(f"Sales range: {daily['total_sales'].min():.2f} → {daily['total_sales'].
 df_feat = daily.copy()
 df_feat = df_feat.sort_values('date').reset_index(drop=True)
 
-# --- Lag Features ---
+#  Lag Features
 for lag in [1, 7, 14, 21, 30, 60, 90]:
     df_feat[f'sales_lag_{lag}'] = df_feat['total_sales'].shift(lag)
 
-# --- Rolling Statistics ---
+#Rolling Statistics
 for window in [7, 14, 30, 60]:
     df_feat[f'rolling_mean_{window}'] = df_feat['total_sales'].shift(1).rolling(window).mean()
     df_feat[f'rolling_std_{window}']  = df_feat['total_sales'].shift(1).rolling(window).std()
     df_feat[f'rolling_min_{window}']  = df_feat['total_sales'].shift(1).rolling(window).min()
     df_feat[f'rolling_max_{window}']  = df_feat['total_sales'].shift(1).rolling(window).max()
 
-# --- Exponential Weighted Mean ---
+# Exponential Weighted Mean
 df_feat['ewm_7']  = df_feat['total_sales'].shift(1).ewm(span=7).mean()
 df_feat['ewm_30'] = df_feat['total_sales'].shift(1).ewm(span=30).mean()
 
-# --- Calendar Features ---
+# Calendar Features
 df_feat['year']        = df_feat['date'].dt.year
 df_feat['month']       = df_feat['date'].dt.month
 df_feat['quarter']     = df_feat['date'].dt.quarter
@@ -151,20 +151,20 @@ df_feat['is_month_start'] = df_feat['date'].dt.is_month_start.astype(int)
 df_feat['is_month_end']   = df_feat['date'].dt.is_month_end.astype(int)
 df_feat['is_quarter_end'] = df_feat['date'].dt.is_quarter_end.astype(int)
 
-# --- Cyclical Encoding (sin/cos for periodicity) ---
+
 df_feat['month_sin']       = np.sin(2 * np.pi * df_feat['month'] / 12)
 df_feat['month_cos']       = np.cos(2 * np.pi * df_feat['month'] / 12)
 df_feat['day_of_week_sin'] = np.sin(2 * np.pi * df_feat['day_of_week'] / 7)
 df_feat['day_of_week_cos'] = np.cos(2 * np.pi * df_feat['day_of_week'] / 7)
 
-# --- Business / Demand Features ---
+# Business /Demand Features
 df_feat['promo_per_store']     = df_feat['total_onpromotion'] / df_feat['num_stores']
 df_feat['transactions_per_store'] = df_feat['total_transactions'] / df_feat['num_stores']
 df_feat['oil_change']          = df_feat['avg_oil_price'].diff()
 df_feat['oil_rolling_7']       = df_feat['avg_oil_price'].rolling(7).mean()
 df_feat['is_payday']           = df_feat['day_of_month'].isin([15, 16, 28, 29, 30, 31]).astype(int)
 
-# --- Trend Features ---
+# Trend Features
 df_feat['sales_trend_7']  = df_feat['rolling_mean_7']  - df_feat['rolling_mean_30']
 df_feat['sales_trend_14'] = df_feat['rolling_mean_14'] - df_feat['rolling_mean_30']
 
@@ -466,7 +466,7 @@ for (fold_label, tr_start, tr_end, te_start, te_end) in valid_splits:
     print(f"  Fold {fold_label}: MAE={mae:.2f} | RMSE={rmse:.2f} | R²={r2:.4f} | MAPE={mape:.2f}%")
 
 wf_df = pd.DataFrame(wf_results)
-print("\n📊 Walk-Forward Validation Summary:")
+print("\n Walk-Forward Validation Summary:")
 print(wf_df.to_string(index=False))
 
 # Plot WF metrics
@@ -559,13 +559,13 @@ print(f"  Normal Demand regime: SHAP promotion effect = {promo_normal:.2f}")
 print(f"  Low Demand regime:    SHAP promotion effect = {promo_low:.2f}")
 print(f"  → Promotions are {ratio_high:.1f}x more influential during High Demand vs Low Demand")
 
-print(f"\n🔍 HOLIDAY INSIGHTS:")
+print(f"\n HOLIDAY INSIGHTS:")
 for k, v in insights['holiday_shap'].items():
     print(f"  {k}: SHAP holiday effect = {v:.4f}")
 max_hol_regime = max(insights['holiday_shap'], key=insights['holiday_shap'].get)
 print(f"  → Holiday effects are strongest during {max_hol_regime} regime")
 
-print(f"\n🔍 OIL PRICE INSIGHTS:")
+print(f"\n OIL PRICE INSIGHTS:")
 for k, v in insights['oil_shap'].items():
     print(f"  {k}: SHAP oil effect = {v:.4f}")
 max_oil_regime = max(insights['oil_shap'], key=insights['oil_shap'].get)
@@ -625,11 +625,11 @@ def get_inventory_recommendation(predicted_sales, current_regime, onpromotion, i
 
     # Decision
     if urgency_score >= 4:
-        return 'INCREASE INVENTORY 🔺', 'high', urgency_score
+        return 'INCREASE INVENTORY', 'high', urgency_score
     elif urgency_score >= 1:
-        return 'MAINTAIN INVENTORY ➡️', 'medium', urgency_score
+        return 'MAINTAIN INVENTORY', 'medium', urgency_score
     else:
-        return 'REDUCE INVENTORY 🔻', 'low', urgency_score
+        return 'REDUCE INVENTORY', 'low', urgency_score
 
 # Apply to recent data
 recent = df_feat.tail(90).copy()
@@ -800,7 +800,7 @@ plt.tight_layout()
 plt.savefig('forecast_30days.png', dpi=150, bbox_inches='tight')
 plt.show()
 
-print(f"\n📅 Forecast Summary:")
+print(f"\n Forecast Summary:")
 print(future_df[['date','total_sales','regime_label']].to_string(index=False))
 
 os.makedirs('/content/models', exist_ok=True)
