@@ -1,4 +1,3 @@
-# Regime-Switching-E-Commerce-Sales-Forecasting-Inventory-Intelligence-System
 # Regime-Switching E-Commerce Sales Forecasting & Inventory Intelligence System
 
 ## Overview
